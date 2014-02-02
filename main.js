@@ -1,29 +1,39 @@
-//-------------------------------------------------------------------------------------
-//
-// THIS FILE IS NOT A PART OF THE PLUGIN, IT'S ONLY FOR THE DEMO
-//
-//-------------------------------------------------------------------------------------
 !(function(){
     'use strict';
 
-	var numOfImages = window.location.search ? parseInt(window.location.search.match(/\d+$/)[0]) : 70,
+    //var body = document.getElementsByTagName('body')[0];
+    //body.requestFullscreen();
+    //window.webkitRequestFullscreen();
+    addEventListener("click", function() {
+            var
+                  el = document.documentElement
+                , rfs =
+                       el.requestFullScreen
+                    || el.webkitRequestFullScreen
+                    || el.mozRequestFullScreen
+            ;
+        rfs.call(el);
+    });
+
+	var numOfImages = window.location.search ? parseInt(window.location.search.match(/\d+$/)[0]) : 999999,
 		gallery = $('#gallery'),
 		videos = [
+            /*
 			{
 				title: "Victoria's Secret",
 				url: "http://player.vimeo.com/video/8974462?byline=0&portrait=0",
 				thumb: "http://b.vimeocdn.com/ts/432/699/43269900_100.jpg"
-			},
+			},*/
 			{
-				title: "PEOPLE ARE AWESOME 2013 FULL HD ",
-				url: "http://www.youtube.com/embed/W3OQgh_h4U4",
-				thumb: "http://img.youtube.com/vi/W3OQgh_h4U4/0.jpg"
-			},
+				title: "Our Wedding - Unedited",
+				url: "http://www.youtube.com/embed/ckihqw4yZs4",
+				thumb: "http://img.youtube.com/vi/ckihqw4yZs4/0.jpg"
+			}/*,
 			{
 				title: "Biting Elbows - 'Bad Motherfucker' Official Music Video",
 				url: "http://player.vimeo.com/video/62092214?byline=0&portrait=0",
 				thumb: "http://b.vimeocdn.com/ts/431/797/431797120_100.jpg"
-			}
+			}*/
 		];
 		
     // Get some photos from Flickr for the demo
@@ -31,9 +41,12 @@
         url: 'http://api.flickr.com/services/rest/',
         data: {
             format: 'json',
-            method: 'flickr.interestingness.getList',
+            //method: 'flickr.interestingness.getList',
+            method: 'flickr.photosets.getPhotos',
 			per_page : numOfImages,
-            api_key: 'b51d3a7c3988ba6052e25cb152aecba2' // this is my own API key, please use yours
+            photoset_id: '72157640311884826',
+            //api_key: 'b51d3a7c3988ba6052e25cb152aecba2' // this is my own API key, please use yours
+            api_key: 'ab9b0aa41367fdf327f2ba94c4c01071' // this is my own API key, please use yours
         },
 	    dataType: 'jsonp',
         jsonp: 'jsoncallback'
@@ -41,8 +54,13 @@
 	.done(function (data){
         var loadedIndex = 1, isVideo;
 		
+        data.photos = {
+            photo: data.photoset.photo
+        };
+        
 		// add the videos to the collection
-		data.photos.photo = data.photos.photo.concat(videos);
+		//data.photos.photo = data.photos.photo.concat(videos);
+		data.photos.photo = videos.concat(data.photos.photo);
 		
         $.each( data.photos.photo, function(index, photo){
 			isVideo = photo.thumb ? true : false;
